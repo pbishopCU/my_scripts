@@ -1,8 +1,17 @@
+//specify the number of Folders per Space you would like
+var numberOfFolders = 3;
+
+//specify the number of Lists per Folder you would like
+var numberOfLists = 5;
+
+//specify the number of tasks per List
+var numberOfTasks = 10;
+
 //create a Space
 pm.sendRequest({
   url: `https://api.clickup.com/api/v2/team/${pm.response.json().teams[0].id}/space`, method: 'POST', header: { 'authorization': request.headers['authorization'] }, body: {
 
-    "name": `Safe Space`,
+    "name": "{{@randomLastName}}",
     "multiple_assignees": true,
     "features": {
       "due_dates": {
@@ -38,37 +47,16 @@ pm.sendRequest({
     }
 
   }
-}, function (err, response) {
+}, function (err, spaceResponse) {
   if (err != null) {
     console.log(err)
   } else {
-    console.log('Space Created')
-  }
-})
-
-//specify the number of Lists per Folder you would like
-var numberOfLists = 1;
-//specify the random name type
-var listName = pm.variables.replaceIn("{{$randomLocale}}");
-//specify the number of tasks per List
-var numberOfTasks = 1;
-//specify the random name type
-var taskName = pm.variables.replaceIn("{{$randomBs}}");
-
-//specify the number of Folders per Space you would like
-var numberOfFolders = 3;
-
-//specify the number of Lists per Folder you would like
-var numberOfLists = 5;
-
-//specify the number of tasks per List
-var numberOfTasks = 10;
-
+    
 for (var i = 1; i <= numberOfFolders; i++) {
   //specify the random name type
   var folderName = pm.variables.replaceIn("{{$randomFirstName}}");
   pm.sendRequest({
-    url: `https://api.clickup.com/api/v2/space/${pm.response.json().id}/folder`, method: 'POST', header: { 'Content-type': 'application/json', 'authorization': request.headers['authorization'] }, body: {
+    url: `https://api.clickup.com/api/v2/space/${spaceResponse.json().id}/folder`, method: 'POST', header: { 'Content-type': 'application/json', 'authorization': request.headers['authorization'] }, body: {
       mode: 'application/json',
       raw: JSON.stringify({ "name": folderName })
     }
@@ -116,6 +104,12 @@ for (var i = 1; i <= numberOfFolders; i++) {
   }
   );
 }
+  }
+})
+
+
+
+
 
 
 
